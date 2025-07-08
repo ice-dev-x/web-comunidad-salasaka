@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\Noticia;
 use Illuminate\Http\Request;
 
 class NoticiaController extends Controller
@@ -11,7 +11,9 @@ class NoticiaController extends Controller
      */
     public function index()
     {
-        return view('noticias.index'); //Cuando alguien visite /noticias, muestra la vista resources/views/noticias/index.blade.php
+        $noticias = Noticia::orderBy('created_at', 'desc')->get();
+    return view('noticias.index', compact('noticias'));
+        //return view('noticias.index'); //Cuando alguien visite /noticias, muestra la vista resources/views/noticias/index.blade.php
     }
 
     /**
@@ -19,7 +21,7 @@ class NoticiaController extends Controller
      */
     public function create()
     {
-        //
+        return view('noticias.create');
     }
 
     /**
@@ -27,15 +29,31 @@ class NoticiaController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
+        // Validación rápida
+    $request->validate([
+        'titulo' => 'required|string|max:255',
+        'contenido' => 'required|string',
+        'autor' => 'nullable|string|max:100',
+    ]);
+
+    // Guardar en la base de datos
+    Noticia::create([
+        'titulo' => $request->titulo,
+        'contenido' => $request->contenido,
+        'autor' => $request->autor,
+        'publicado' => true
+    ]);
+
+    return redirect()->route('noticias.index')->with('success', 'Noticia creada correctamente.');
+    } 
 
     /**
      * Display the specified resource.
      */
     public function show(string $id)
     {
-        //
+        $noticia = Noticia::findOrFail($id);
+    return view('noticias.show', compact('noticia'));
     }
 
     /**
@@ -43,7 +61,8 @@ class NoticiaController extends Controller
      */
     public function edit(string $id)
     {
-        //
+         $noticia = Noticia::findOrFail($id);
+    return view('noticias.edit', compact('noticia'));
     }
 
     /**
@@ -51,7 +70,15 @@ class NoticiaController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+        'titulo' => 'required|string|max:255',
+        'contenido' => 'required|string',
+        'autor' => 'nullable|string|max:100',
+        ]);
+    $noticia = Noticia::findOrFail($id);
+    $noticia->update($request->all());
+
+    return redirect()->route('noticias.index')->with('success', 'Noticia actualizada.');
     }
 
     /**
@@ -59,6 +86,9 @@ class NoticiaController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $noticia = Noticia::findOrFail($id);
+    $noticia->delete();
+
+    return redirect()->route('noticias.index')->with('success', 'Noticia eliminada.');
     }
 }
