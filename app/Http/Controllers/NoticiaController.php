@@ -40,7 +40,12 @@ class NoticiaController extends Controller
         'titulo' => 'required|string|max:255',
         'contenido' => 'required|string',
         'autor' => 'nullable|string|max:100',
-        'imagen' => 'nullable|image|max:2048', // máximo 2MB
+        'imagen' => 'nullable|image|mimes:jpg,jpeg,png|max:2048', // ❗️evita avif aquí
+        //'imagen' => 'nullable|image|max:2048', // máximo 2MB
+        ], [
+    // Mensajes personalizados
+    'imagen.mimes' => 'Formato de imagen no válido. Solo se permiten JPG, JPEG o PNG.',
+    'imagen.image' => 'El archivo debe ser una imagen válida.',
     ]);
 
     // Guardar en la base de datos
@@ -97,7 +102,12 @@ class NoticiaController extends Controller
         'titulo' => 'required|string|max:255',
         'contenido' => 'required|string',
         'autor' => 'nullable|string|max:100',
-        'imagen' => 'nullable|image|max:2048',
+        'imagen' => 'nullable|image|mimes:jpg,jpeg,png|max:2048', // ❗️evita avif aquí
+        //'imagen' => 'nullable|image|max:2048',
+        ], [
+    // Mensajes personalizados
+    'imagen.mimes' => 'Formato de imagen no válido. Solo se permiten JPG, JPEG o PNG.',
+    'imagen.image' => 'El archivo debe ser una imagen válida.',
         ]);
     $noticia = Noticia::findOrFail($id);
     $noticia->update($request->all());
