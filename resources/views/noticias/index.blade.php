@@ -26,26 +26,43 @@
     <table class="table table-striped">
     <thead>
         <tr>
+            <th>Imagen</th>
             <th>Título</th>
             <th>Autor</th>
             <th>Fecha</th>
+            
             <th>Acciones</th>
+            
         </tr>
     </thead>
     <tbody>
         @foreach ($noticias as $noticia)
-            <tr>
+            <tr class="align-middle">
+                <td>
+            @if($noticia->imagen)
+                <img src="{{ asset('storage/' . $noticia->imagen) }}" alt="Imagen de la noticia" width="100">
+            @else
+                Sin imagen
+            @endif
+                </td>
                 <td>{{ $noticia->titulo }}</td>
                 <td>{{ $noticia->autor ?? 'Anónimo' }}</td>
                 <td>{{ $noticia->created_at->format('d/m/Y') }}</td>
+                <!--<td>@if($noticia->imagen)<img src="{{ asset('storage/' . $noticia->imagen) }}" alt="Imagen" width="100">@endif </td>-->
                 <td>
+                    <div class="d-flex flex-wrap gap-1">
                     <a href="{{ route('noticias.show', $noticia->id) }}" class="btn btn-sm btn-info">Ver</a>
+                    @auth
+                    @if (Auth::user()->rol === 'admin')
                     <a href="{{ route('noticias.edit', $noticia->id) }}" class="btn btn-sm btn-warning">Editar</a>
                     <form action="{{ route('noticias.destroy', $noticia->id) }}" method="POST" style="display:inline-block;">
                         @csrf
                         @method('DELETE')
                         <button type="submit" onclick="return confirm('¿Estás seguro?')" class="btn btn-sm btn-danger">Eliminar</button>
                     </form>
+                    @endif
+                @endauth
+                    </div>
                 </td>
             </tr>
         @endforeach
@@ -54,9 +71,13 @@
 
 @endif
        
-
+        @auth
+    @if (Auth::user()->rol === 'admin')
         <a href="{{ route('noticias.create') }}" class="btn btn-primary">Crear nueva noticia</a>
-    </div>
+    @endif
+@endauth
 
+    </div>
+    
 </body>
 </html>

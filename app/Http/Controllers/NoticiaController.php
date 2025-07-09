@@ -21,6 +21,9 @@ class NoticiaController extends Controller
      */
     public function create()
     {
+        if (!auth()->check() || auth()->user()->rol !== 'admin') {
+        abort(403, 'Acceso no autorizado');
+    }
         return view('noticias.create');
     }
 
@@ -29,20 +32,34 @@ class NoticiaController extends Controller
      */
     public function store(Request $request)
     {
+        if (!auth()->check() || auth()->user()->rol !== 'admin') {
+        abort(403, 'Acceso no autorizado');
+        }
         // Validación rápida
     $request->validate([
         'titulo' => 'required|string|max:255',
         'contenido' => 'required|string',
         'autor' => 'nullable|string|max:100',
+        'imagen' => 'nullable|image|max:2048', // máximo 2MB
     ]);
 
     // Guardar en la base de datos
-    Noticia::create([
+    /*Noticia::create([
         'titulo' => $request->titulo,
         'contenido' => $request->contenido,
         'autor' => $request->autor,
         'publicado' => true
-    ]);
+    ]);*/
+    $noticia = new Noticia();
+    $noticia->titulo = $request->titulo;
+    $noticia->contenido = $request->contenido;
+    $noticia->autor = $request->autor;
+    // Guardar imagen si se subió
+    if ($request->hasFile('imagen')) {
+    $ruta = $request->file('imagen')->store('noticias', 'public');
+    $noticia->imagen = $ruta;
+    }
+     $noticia->save();
 
     return redirect()->route('noticias.index')->with('success', 'Noticia creada correctamente.');
     } 
@@ -61,8 +78,11 @@ class NoticiaController extends Controller
      */
     public function edit(string $id)
     {
-         $noticia = Noticia::findOrFail($id);
-    return view('noticias.edit', compact('noticia'));
+        if (!auth()->check() || auth()->user()->rol !== 'admin') {
+    abort(403, 'Acceso no autorizado');
+    }
+        $noticia = Noticia::findOrFail($id);
+        return view('noticias.edit', compact('noticia'));
     }
 
     /**
@@ -70,13 +90,30 @@ class NoticiaController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        if (!auth()->check() || auth()->user()->rol !== 'admin') {
+    abort(403, 'Acceso no autorizado');
+    }
         $request->validate([
         'titulo' => 'required|string|max:255',
         'contenido' => 'required|string',
         'autor' => 'nullable|string|max:100',
+        'imagen' => 'nullable|image|max:2048',
         ]);
     $noticia = Noticia::findOrFail($id);
     $noticia->update($request->all());
+    // Actualizar imagen si se sube una nueva
+    if ($request->hasFile('imagen')) {
+        // Eliminar imagen anterior si existe
+        if ($noticia->imagen && \Storage::disk('public')->exists($noticia->imagen)) {
+            \Storage::disk('public')->delete($noticia->imagen);
+        }
+
+        // Guardar nueva imagen
+        $ruta = $request->file('imagen')->store('noticias', 'public');
+        $noticia->imagen = $ruta;
+    }
+
+    $noticia->save();
 
     return redirect()->route('noticias.index')->with('success', 'Noticia actualizada.');
     }
@@ -86,6 +123,9 @@ class NoticiaController extends Controller
      */
     public function destroy(string $id)
     {
+        if (!auth()->check() || auth()->user()->rol !== 'admin') {
+    abort(403, 'Acceso no autorizado');
+    }
         $noticia = Noticia::findOrFail($id);
     $noticia->delete();
 

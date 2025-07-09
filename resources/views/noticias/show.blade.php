@@ -7,6 +7,9 @@
 </head>
 <body class="p-4">
     <div class="container">
+        @if($noticia->imagen)
+        <img src="{{ asset('storage/' . $noticia->imagen) }}" alt="Imagen de la noticia" style="max-width: 100%; height: auto;">
+        @endif
         <h1>{{ $noticia->titulo }}</h1>
         <p><strong>Autor:</strong> {{ $noticia->autor ?? 'Anónimo' }}</p>
         <p><strong>Fecha:</strong> {{ $noticia->created_at->format('d/m/Y') }}</p>

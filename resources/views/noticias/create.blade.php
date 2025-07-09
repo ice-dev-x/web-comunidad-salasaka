@@ -9,7 +9,10 @@
     <div class="container">
         <h1 class="mb-4">Crear nueva noticia</h1>
 
-        <form action="{{ route('noticias.store') }}" method="POST">
+        <!--<form action="{{ route('noticias.store') }}" method="POST">-->
+            <form method="POST" action="{{ route('noticias.store') }}" method="POST" enctype="multipart/form-data">
+
+
             @csrf
 
             <div class="mb-3">
@@ -25,6 +28,11 @@
             <div class="mb-3">
                 <label for="autor" class="form-label">Autor</label>
                 <input type="text" name="autor" class="form-control">
+            </div>
+
+            <div class="mb-3">
+            <label for="imagen" class="form-label">Imagen de la noticia</label>
+            <input type="file" name="imagen" id="imagen" class="form-control" accept="image/*">
             </div>
 
             <button type="submit" class="btn btn-success">Guardar Noticia</button>

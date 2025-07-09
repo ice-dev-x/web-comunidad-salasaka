@@ -9,7 +9,8 @@
     <div class="container">
         <h1>Editar Noticia</h1>
 
-        <form action="{{ route('noticias.update', $noticia->id) }}" method="POST">
+        <form action="{{ route('noticias.update', $noticia->id) }}" method="POST" enctype="multipart/form-data">
+
             @csrf
             @method('PUT')
 
@@ -27,6 +28,18 @@
                 <label class="form-label">Autor</label>
                 <input type="text" name="autor" class="form-control" value="{{ $noticia->autor }}">
             </div>
+                    @if($noticia->imagen)
+            <div class="mb-3">
+                <p><strong>Imagen actual:</strong></p>
+                <img src="{{ asset('storage/' . $noticia->imagen) }}" alt="Imagen actual" width="200">
+            </div>
+            @endif
+
+            <div class="mb-3">
+                <label class="form-label">Nueva imagen (opcional)</label>
+                <input type="file" name="imagen" class="form-control">
+            </div>
+
 
             <button type="submit" class="btn btn-success">Actualizar</button>
             <a href="{{ route('noticias.index') }}" class="btn btn-secondary">Cancelar</a>
