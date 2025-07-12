@@ -5,7 +5,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\NoticiaController;
 use App\Http\Controllers\ComentarioController;
 use App\Http\Controllers\AdminController;
-
+use App\Http\Controllers\Admin\CategoriaAdminController;
+use App\Http\Controllers\Admin\ComentarioAdminController;
 /* ─────────────────  Página de bienvenida  ──────────────── */
 Route::get('/', function () {
     return view('welcome');
@@ -36,13 +37,19 @@ Route::middleware('auth')->group(function () {
 
 /* ─────────────────  Panel de administración  ───────────── */
 /* -> Requiere estar autenticado Y rol admin                 */
-//DASHBOARD
-Route::middleware(['auth','admin'])->group(function () {
-    Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
-//Categorías (CRUD)
-Route::resource('/admin/categorias',
-                App\Http\Controllers\Admin\CategoriaAdminController::class)
-        ->names('admin.categorias');
+Route::prefix('/admin')->name('admin.')->middleware(['auth','admin'])->group(function () {
+
+    // Dashboard
+    Route::get('/', [AdminController::class, 'index'])->name('index');
+
+    // Categorías (CRUD)
+    Route::resource('categorias', CategoriaAdminController::class);
+
+    // Comentarios pendientes de aprobación
+    Route::get('comentarios', [ComentarioAdminController::class,'index'])->name('comentarios.index');
+    Route::put('comentarios/{comentario}/aprobar', [ComentarioAdminController::class,'aprobar'])->name('comentarios.aprobar');
+    Route::put('comentarios/{comentario}/rechazar', [ComentarioAdminController::class,'rechazar'])->name('comentarios.rechazar');
+       
 });
 
 /* ─────────────────  Rutas generadas por Breeze  ────────── */

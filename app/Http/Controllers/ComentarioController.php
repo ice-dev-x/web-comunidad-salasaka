@@ -22,9 +22,10 @@ class ComentarioController extends Controller
     $comentario->contenido = $request->contenido;
     $comentario->noticia_id = $noticiaId;
     $comentario->user_id = auth()->id();
+    $comentario->estado = 'pendiente'; // 👈 clave: el comentario queda en revisión|Al cambiarlo a "aprobado" todos los comentarios se publican sin moderación 
     $comentario->save();
 
-    return redirect()->route('noticias.show', $noticiaId)->with('success', 'Comentario agregado.');
+    return redirect()->route('noticias.show', $noticiaId)->with('success', 'Tu comentario ha sido enviado y está en revisión.');
 }
 
 }

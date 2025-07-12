@@ -19,13 +19,20 @@
             {{-- Agrega ruta a lista de usuarios cuando la crees --}}
         </div>
         
-
         <!-- Tarjeta Comentarios -->
         <div class="bg-white shadow-lg rounded-lg p-6 border">
             <h2 class="text-xl font-semibold mb-2">Comentarios</h2>
             <p class="text-4xl font-bold text-purple-600">{{ $totalComentarios }}</p>
             {{-- Futuro: ruta a moderación de comentarios --}}
         </div>
+
+        <!-- Tarjeta Comentarios pendientes -->
+        <div class="bg-white shadow-lg rounded-lg p-6 border">
+            <h2 class="text-xl font-semibold mb-2">Com. pendientes</h2>
+            <p class="text-4xl font-bold text-red-600">{{ $pendientesComentarios }}</p>
+            <a href="{{ route('admin.comentarios.index') }}" class="text-blue-500 hover:underline">Revisar</a>
+        </div>
+
         <!-- Tarjeta Categorías -->
         <div class="bg-white shadow-lg rounded-lg p-6 border">
             <h2 class="text-xl font-semibold mb-2">Categorías</h2>

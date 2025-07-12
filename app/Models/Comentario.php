@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Comentario extends Model
 {
-    protected $fillable = ['noticia_id', 'user_id', 'contenido'];
+    protected $fillable = ['noticia_id', 'user_id', 'contenido', 'estado'];
 
     // Relación: este comentario pertenece a una noticia
     public function noticia()

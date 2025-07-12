@@ -17,7 +17,8 @@ class AdminController extends Controller
             'totalUsuarios'   => User::count(),
             'totalComentarios'=> Comentario::count(),
             'totalCategorias'   => Categoria::count(),
-            'ultimasNoticias'   => Noticia::latest()->take(5)->get(),
+            'ultimasNoticias'   => Noticia::latest()->take(5)->get(),// Número de ultimás noticias que se muestran en el Panel de admin
+            'pendientesComentarios'=> Comentario::where('estado', 'pendiente')->count(), // nuevo dato
         ]);
     }
 }
