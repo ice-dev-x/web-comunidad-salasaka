@@ -8,12 +8,24 @@
 </head>
 <body class="bg-gray-100 py-6">
     <div class="max-w-6xl mx-auto px-4">
-
+        
         {{-- Título y formulario de búsqueda --}}
         <h1 class="text-2xl font-bold text-gray-800 mb-2">Noticias de la Comunidad Salasaka</h1>
         <p class="text-gray-600 mb-6">¡Bienvenido al módulo de noticias! Aquí encontrarás información actualizada sobre nuestra comunidad.</p>
+        
+        
         <form action="{{ route('noticias.index') }}" method="GET" class="mb-6 flex flex-col sm:flex-row sm:items-center sm:space-x-3 space-y-2 sm:space-y-0">
-            <input type="text" name="busqueda" value="{{ request('busqueda') }}"
+        {{-- Selector de categoría --}}
+        <select name="categoria" class="p-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300">
+        <option value="">Todas las categorías</option>
+        @foreach($categorias as $cat)
+            <option value="{{ $cat->id }}" {{ request('categoria') == $cat->id ? 'selected' : '' }}>
+                {{ $cat->nombre }}
+            </option>
+        @endforeach
+    </select>
+        {{-- Campo de búsqueda existente --}}    
+        <input type="text" name="busqueda" value="{{ request('busqueda') }}"
                 placeholder="Buscar noticias..."
                 class="p-2 border border-gray-300 rounded-md w-full sm:w-64 focus:outline-none focus:ring focus:border-blue-300">
             <button type="submit"

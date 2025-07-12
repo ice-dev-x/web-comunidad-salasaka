@@ -11,22 +11,33 @@ class NoticiaController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Noticia::query();
-        // Si hay una búsqueda, filtra por título o contenido
-    if ($request->has('busqueda') && $request->busqueda !== null) {
-        $query->where('titulo', 'like', '%' . $request->busqueda . '%')
-              ->orWhere('contenido', 'like', '%' . $request->busqueda . '%');
-    }
-        // Ordena por fecha más reciente y pagina resultados
-        $noticias = $query->orderBy('created_at', 'desc')->paginate(9);  //numeros ne noticias por página  
-        //$noticias = Noticia::orderBy('created_at', 'desc')->get();
-    return view('noticias.index', compact('noticias'));
-        //return view('noticias.index'); //Cuando alguien visite /noticias, muestra la vista resources/views/noticias/index.blade.php
+        /* ───── Construir consulta base ───── */
+    $query = Noticia::query();
+
+    /* 🔍 Búsqueda por texto */
+    if ($request->filled('busqueda')) {
+        $query->where(function ($q) use ($request) {
+            $q->where('titulo',    'like', '%'.$request->busqueda.'%')
+              ->orWhere('contenido','like', '%'.$request->busqueda.'%');
+        });
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    /* 🏷️ Filtro por categoría */
+    if ($request->filled('categoria')) {
+        $query->where('categoria_id', $request->categoria);
+    }
+
+    /* 📅 Orden y paginación (10 por página) */
+    $noticias = $query->latest()                // mismo que orderBy('created_at', 'desc')
+                      ->paginate(10)
+                      ->appends($request->only(['busqueda', 'categoria']));
+
+    /* 📂 Todas las categorías para el selector */
+    $categorias = Categoria::orderBy('nombre')->get();
+
+    /* 📄 Enviar datos a la vista */
+    return view('noticias.index', compact('noticias', 'categorias'));
+    }
     public function create()
     // Solo admins
     {
