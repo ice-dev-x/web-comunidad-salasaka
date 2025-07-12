@@ -3,15 +3,23 @@
 namespace App\Http\Controllers;
 use App\Models\Noticia;
 use Illuminate\Http\Request;
-
+use App\Models\Categoria;
 class NoticiaController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $noticias = Noticia::orderBy('created_at', 'desc')->get();
+        $query = Noticia::query();
+        // Si hay una búsqueda, filtra por título o contenido
+    if ($request->has('busqueda') && $request->busqueda !== null) {
+        $query->where('titulo', 'like', '%' . $request->busqueda . '%')
+              ->orWhere('contenido', 'like', '%' . $request->busqueda . '%');
+    }
+        // Ordena por fecha más reciente y pagina resultados
+        $noticias = $query->orderBy('created_at', 'desc')->paginate(9);  //numeros ne noticias por página  
+        //$noticias = Noticia::orderBy('created_at', 'desc')->get();
     return view('noticias.index', compact('noticias'));
         //return view('noticias.index'); //Cuando alguien visite /noticias, muestra la vista resources/views/noticias/index.blade.php
     }
@@ -20,12 +28,19 @@ class NoticiaController extends Controller
      * Show the form for creating a new resource.
      */
     public function create()
+    // Solo admins
     {
         if (!auth()->check() || auth()->user()->rol !== 'admin') {
         abort(403, 'Acceso no autorizado');
     }
-        return view('noticias.create');
+        //return view('noticias.create');
+    
+     // Traer categorías ordenadas alfabéticamente
+    $categorias = Categoria::orderBy('nombre')->get();
+    // Pasarlas a la vista
+    return view('noticias.create', compact('categorias'));
     }
+    
 
     /**
      * Store a newly created resource in storage.
@@ -37,10 +52,11 @@ class NoticiaController extends Controller
         }
         // Validación rápida
     $request->validate([
-        'titulo' => 'required|string|max:255',
+        'titulo' => 'required|string|max:255', //required hace que el campo sea obligatorio de llenar
         'contenido' => 'required|string',
-        'autor' => 'nullable|string|max:100',
-        'imagen' => 'nullable|image|mimes:jpg,jpeg,png|max:2048', // ❗️evita avif aquí
+        'categoria_id' => 'required|exists:categorias,id',
+        'autor' => 'required|nullable|string|max:100',
+        'imagen' => 'required|nullable|image|mimes:jpg,jpeg,png|max:2048', // ❗️evita avif aquí
         //'imagen' => 'nullable|image|max:2048', // máximo 2MB
         ], [
     // Mensajes personalizados
@@ -55,9 +71,11 @@ class NoticiaController extends Controller
         'autor' => $request->autor,
         'publicado' => true
     ]);*/
+    //Crear noticia
     $noticia = new Noticia();
     $noticia->titulo = $request->titulo;
     $noticia->contenido = $request->contenido;
+    $noticia->categoria_id   = $request->categoria_id;      // ← NUEVO
     $noticia->autor = $request->autor;
     // Guardar imagen si se subió
     if ($request->hasFile('imagen')) {
@@ -82,52 +100,67 @@ class NoticiaController extends Controller
      * Show the form for editing the specified resource.
      */
     public function edit(string $id)
-    {
+    {  //solo admins
         if (!auth()->check() || auth()->user()->rol !== 'admin') {
     abort(403, 'Acceso no autorizado');
     }
-        $noticia = Noticia::findOrFail($id);
-        return view('noticias.edit', compact('noticia'));
-    }
+        // Noticia a editar
+    $noticia = Noticia::findOrFail($id);
 
+    // Todas las categorías
+    $categorias = Categoria::orderBy('nombre')->get();
+
+    // Pasar ambas cosas a la vista
+    return view('noticias.edit', compact('noticia', 'categorias'));
+    }
+    
+     
+    
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
-    {
-        if (!auth()->check() || auth()->user()->rol !== 'admin') {
-    abort(403, 'Acceso no autorizado');
+    // ───────────── UPDATE ─────────────
+public function update(Request $request, string $id)
+{
+    // Solo admins
+    if (!auth()->check() || auth()->user()->rol !== 'admin') {
+        abort(403, 'Acceso no autorizado');
     }
-        $request->validate([
-        'titulo' => 'required|string|max:255',
-        'contenido' => 'required|string',
-        'autor' => 'nullable|string|max:100',
-        'imagen' => 'nullable|image|mimes:jpg,jpeg,png|max:2048', // ❗️evita avif aquí
-        //'imagen' => 'nullable|image|max:2048',
-        ], [
-    // Mensajes personalizados
-    'imagen.mimes' => 'Formato de imagen no válido. Solo se permiten JPG, JPEG o PNG.',
-    'imagen.image' => 'El archivo debe ser una imagen válida.',
-        ]);
-    $noticia = Noticia::findOrFail($id);
-    $noticia->update($request->all());
-    // Actualizar imagen si se sube una nueva
+
+    // VALIDACIÓN
+    $request->validate([
+        'titulo'       => 'required|string|max:255',
+        'contenido'    => 'required|string',
+        'categoria_id' => 'required|exists:categorias,id',
+        'autor'        => 'required|nullable|string|max:100',
+        'imagen'       => 'required|nullable|image|mimes:jpg,jpeg,png|max:2048',
+    ], [
+        'imagen.mimes' => 'Formato no válido. Solo JPG, JPEG o PNG.',
+        'imagen.image' => 'El archivo debe ser una imagen válida.',
+    ]);
+
+    // Encontrar noticia
+    $noticia               = Noticia::findOrFail($id);
+    $noticia->titulo       = $request->titulo;
+    $noticia->contenido    = $request->contenido;
+    $noticia->categoria_id = $request->categoria_id;        // ← NUEVO
+    $noticia->autor        = $request->autor;
+
+    // Imagen nueva
     if ($request->hasFile('imagen')) {
-        // Eliminar imagen anterior si existe
+        // Borra la antigua si existe
         if ($noticia->imagen && \Storage::disk('public')->exists($noticia->imagen)) {
             \Storage::disk('public')->delete($noticia->imagen);
         }
-
-        // Guardar nueva imagen
         $ruta = $request->file('imagen')->store('noticias', 'public');
         $noticia->imagen = $ruta;
     }
 
     $noticia->save();
 
-    return redirect()->route('noticias.index')->with('success', 'Noticia actualizada.');
-    }
-
+    return redirect()->route('noticias.index')
+                     ->with('success', 'Noticia actualizada.');
+}
     /**
      * Remove the specified resource from storage.
      */

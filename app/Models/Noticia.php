@@ -13,6 +13,10 @@ class Noticia extends Model
     {
         return $this->hasMany(Comentario::class);
     }
+    public function categoria()
+    {
+    return $this->belongsTo(Categoria::class);
+    }
 
 }
 
