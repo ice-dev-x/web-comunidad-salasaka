@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Noticia;
 use App\Models\User;
 use App\Models\Comentario;
-
+use App\Models\Categoria;
 
 class AdminController extends Controller
 {
@@ -16,6 +16,8 @@ class AdminController extends Controller
             'totalNoticias'   => Noticia::count(),
             'totalUsuarios'   => User::count(),
             'totalComentarios'=> Comentario::count(),
+            'totalCategorias'   => Categoria::count(),
+            'ultimasNoticias'   => Noticia::latest()->take(5)->get(),
         ]);
     }
 }

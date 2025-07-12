@@ -26,25 +26,28 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Título</label>
                     <input type="text" name="titulo" value="{{ old('titulo', $noticia->titulo) }}"
-                           class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
+                           class="w-full border border-gray-400 bg-gray-50 rounded-md shadow focus:ring-blue-500 focus:border-blue-500"
+                           required>
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Contenido</label>
                     <textarea name="contenido" rows="6" required
-                              class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">{{ old('contenido', $noticia->contenido) }}</textarea>
+                              class="w-full border border-gray-400 bg-gray-50 rounded-md shadow focus:ring-blue-500 focus:border-blue-500">{{ old('contenido', $noticia->contenido) }}</textarea>
                 </div>
 
                 <div class="grid md:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Autor</label>
                         <input type="text" name="autor" value="{{ old('autor', $noticia->autor) }}"
-                               class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
+                               class="w-full border border-gray-400 bg-gray-50 rounded-md shadow focus:ring-blue-500 focus:border-blue-500" required>
                     </div>
 
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Categoría</label>
-                        <select name="categoria_id" class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
+                        <select name="categoria_id"
+                                class="w-full border border-gray-400 bg-gray-50 rounded-md shadow focus:ring-blue-500 focus:border-blue-500"
+                                required>
                             <option value="">Seleccione…</option>
                             @foreach ($categorias as $cat)
                                 <option value="{{ $cat->id }}"

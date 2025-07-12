@@ -31,12 +31,18 @@ Route::middleware('auth')->group(function () {
     /* Comentarios (solo usuarios autenticados) */
     Route::post('/noticias/{noticia}/comentarios', [ComentarioController::class, 'store'])
           ->name('comentarios.store');
+    
 });
 
 /* ─────────────────  Panel de administración  ───────────── */
 /* -> Requiere estar autenticado Y rol admin                 */
+//DASHBOARD
 Route::middleware(['auth','admin'])->group(function () {
     Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
+//Categorías (CRUD)
+Route::resource('/admin/categorias',
+                App\Http\Controllers\Admin\CategoriaAdminController::class)
+        ->names('admin.categorias');
 });
 
 /* ─────────────────  Rutas generadas por Breeze  ────────── */
