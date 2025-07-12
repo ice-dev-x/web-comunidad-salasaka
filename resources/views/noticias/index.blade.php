@@ -12,7 +12,24 @@
         {{-- Título y formulario de búsqueda --}}
         <h1 class="text-2xl font-bold text-gray-800 mb-2">Noticias de la Comunidad Salasaka</h1>
         <p class="text-gray-600 mb-6">¡Bienvenido al módulo de noticias! Aquí encontrarás información actualizada sobre nuestra comunidad.</p>
-        
+        <div class="flex flex-wrap items-center gap-2 mb-4">
+    {{-- Chip: Todas las categorías --}}
+    <a href="{{ route('noticias.index', ['categoria' => '']) }}"
+       class="px-3 py-1 rounded-full border text-sm
+              {{ request('categoria') == '' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800 hover:bg-blue-100' }}">
+        Todas
+    </a>
+
+    {{-- Chips de cada categoría --}}
+    @foreach ($categorias as $cat)
+        <a href="{{ route('noticias.index', ['categoria' => $cat->id, 'busqueda' => request('busqueda')]) }}"
+           class="px-3 py-1 rounded-full border text-sm
+                  {{ request('categoria') == $cat->id ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800 hover:bg-blue-100' }}">
+            {{ $cat->nombre }}
+        </a>
+    @endforeach
+</div>
+
         
         <form action="{{ route('noticias.index') }}" method="GET" class="mb-6 flex flex-col sm:flex-row sm:items-center sm:space-x-3 space-y-2 sm:space-y-0">
         {{-- Selector de categoría --}}
