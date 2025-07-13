@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('historias', function (Blueprint $table) {
             $table->id();
+            $table->longText('contenido');
             $table->timestamps();
         });
     }

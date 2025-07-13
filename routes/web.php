@@ -7,6 +7,7 @@ use App\Http\Controllers\ComentarioController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Admin\CategoriaAdminController;
 use App\Http\Controllers\Admin\ComentarioAdminController;
+use App\Http\Controllers\HistoriaController; 
 /* ─────────────────  Página de bienvenida  ──────────────── */
 Route::get('/', function () {
     return view('welcome');
@@ -20,7 +21,11 @@ Route::get('/dashboard', function () {
 /* ─────────────────  Noticias y comentarios  ────────────── */
 /* -> Todos los visitantes pueden ver noticias.
    -> Comentarios y perfil SÍ requieren login.               */
+   // Noticias públicas
 Route::resource('noticias', NoticiaController::class);
+/* Página Historia (pública) */
+Route::get('/historia', [HistoriaController::class, 'show'])
+      ->name('historia.show');
 
 /* Perfil de usuario (solo logueados) */
 Route::middleware('auth')->group(function () {
@@ -28,6 +33,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile',  [ProfileController::class, 'edit' ])->name('profile.edit');
     Route::patch('/profile',[ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile',[ProfileController::class, 'destroy'])->name('profile.destroy');
+    
 
     /* Comentarios (solo usuarios autenticados) */
     Route::post('/noticias/{noticia}/comentarios', [ComentarioController::class, 'store'])
@@ -49,7 +55,10 @@ Route::prefix('/admin')->name('admin.')->middleware(['auth','admin'])->group(fun
     Route::get('comentarios', [ComentarioAdminController::class,'index'])->name('comentarios.index');
     Route::put('comentarios/{comentario}/aprobar', [ComentarioAdminController::class,'aprobar'])->name('comentarios.aprobar');
     Route::put('comentarios/{comentario}/rechazar', [ComentarioAdminController::class,'rechazar'])->name('comentarios.rechazar');
-       
+    
+    // Historia (editar/actualizar)
+    Route::get('historia/editar',   [HistoriaController::class,'edit'])->name('historia.edit');
+    Route::put('historia/actualizar', [HistoriaController::class,'update'])->name('historia.update');   
 });
 
 /* ─────────────────  Rutas generadas por Breeze  ────────── */
