@@ -39,6 +39,19 @@
             <p class="text-4xl font-bold text-orange-600">{{ $totalCategorias }}</p>
             <a href="{{ route('admin.categorias.index') }}" class="text-blue-500 hover:underline">Gestionar</a>
         </div>
+        <!-- Tarjeta Historia -->
+<div class="bg-white shadow-lg rounded-lg p-6 border">
+    <h2 class="text-xl font-semibold mb-2">Historia</h2>
+    <p class="text-4xl font-bold text-teal-600">1</p> {{-- solo hay un registro --}}
+    <a href="{{ route('admin.historia.edit') }}" class="text-blue-500 hover:underline">Editar</a>
+
+    @isset($fechaHistoria)
+        <p class="text-xs text-gray-500 mt-1">
+            Actualizada {{ $fechaHistoria->diffForHumans() }}
+        </p>
+    @endisset
+</div>
+
         
         {{-- Últimas noticias (tarjeta coherente) --}}
         <div class="bg-white shadow-lg rounded-lg p-6 border">

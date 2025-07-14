@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Crear Noticia</title>
     <script src="https://cdn.tailwindcss.com"></script>
+
+    {{-- TinyMCE CDN --}}
+    <script src="https://cdn.tiny.cloud/1/36zv4ollhnu75iqqzyykhvx6ucuicltdx5byl2arz50s1i8j/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 </head>
 <body class="bg-gray-100 py-6">
     <div class="max-w-2xl mx-auto px-4">
@@ -26,14 +29,13 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Título</label>
                     <input type="text" name="titulo" value="{{ old('titulo') }}"
-                           class="w-full border border-gray-400 bg-gray-50 rounded-md shadow focus:ring-blue-500 focus:border-blue-500
-"
+                           class="w-full border border-gray-400 bg-gray-50 rounded-md shadow focus:ring-blue-500 focus:border-blue-500"
                            required>
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Contenido</label>
-                    <textarea name="contenido" rows="6" required
+                    <textarea id="contenido" name="contenido" rows="6"
                               class="w-full border border-gray-400 bg-gray-50 rounded-md shadow focus:ring-blue-500 focus:border-blue-500">{{ old('contenido') }}</textarea>
                 </div>
 
@@ -72,5 +74,21 @@
             </form>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            tinymce.init({
+                selector: '#contenido',
+                menubar: false,
+                plugins: 'lists link image table code',
+                toolbar: 'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist | link image | code',
+                height: 400
+            });
+
+            // Forzar que el contenido del editor se copie al <textarea> antes de enviar
+            const form = document.querySelector('form');
+            form.addEventListener('submit', () => tinymce.triggerSave());
+        });
+    </script>
 </body>
 </html>

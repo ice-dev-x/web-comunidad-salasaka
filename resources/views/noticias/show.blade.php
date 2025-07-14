@@ -20,12 +20,15 @@
                     <span class="font-medium">Autor:</span> {{ $noticia->autor ?? 'Anónimo' }} |
                     <span class="font-medium">Fecha:</span> {{ $noticia->created_at->format('d/m/Y') }}
                 </p>
-                 {{-- Categoría (nuevo) --}}
+                {{-- Categoría --}}
                 <p class="text-sm text-gray-600 mb-4">
                     <strong>Categoría:</strong> {{ $noticia->categoria->nombre }}
                 </p>
-                 {{-- Contenido --}}
-                <p class="text-gray-700 leading-relaxed">{{ $noticia->contenido }}</p>
+
+                {{-- Contenido (renderiza HTML) --}}
+                <article class="prose prose-lg max-w-none text-gray-700 leading-relaxed">
+                    {!! $noticia->contenido !!}
+                </article>
             </div>
         </div>
 
@@ -47,24 +50,24 @@
         @endif
 
         {{-- Comentarios --}}
-        <h2 class="text-xl font-semibold text-gray-800 mb-4">Comentarios ({{ $noticia->comentarios->where('estado', 'aprobado')->count() }})
-
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">
+            Comentarios ({{ $noticia->comentarios->where('estado', 'aprobado')->count() }})
         </h2>
 
         <div class="space-y-4 mb-6">
-        @forelse ($noticia->comentarios->where('estado', 'aprobado')->sortByDesc('created_at') as $comentario)
-        <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-4">
-            <div class="flex justify-between items-center mb-2">
-                <span class="font-semibold text-gray-800">{{ $comentario->usuario->name }}</span>
-                <span class="text-sm text-gray-500">{{ $comentario->created_at->diffForHumans() }}</span>
-            </div>
-            <p class="text-gray-700">{{ $comentario->contenido }}</p>
-        </div>
-        @empty
-        <p class="text-gray-500">
-            Aún no hay comentarios aprobados. ¡Sé el primero en opinar!
-        </p>
-        @endforelse
+            @forelse ($noticia->comentarios->where('estado', 'aprobado')->sortByDesc('created_at') as $comentario)
+                <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-semibold text-gray-800">{{ $comentario->usuario->name }}</span>
+                        <span class="text-sm text-gray-500">{{ $comentario->created_at->diffForHumans() }}</span>
+                    </div>
+                    <p class="text-gray-700">{{ $comentario->contenido }}</p>
+                </div>
+            @empty
+                <p class="text-gray-500">
+                    Aún no hay comentarios aprobados. ¡Sé el primero en opinar!
+                </p>
+            @endforelse
         </div>
 
         {{-- Formulario de comentario --}}
