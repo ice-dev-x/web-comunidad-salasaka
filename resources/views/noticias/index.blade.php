@@ -2,6 +2,22 @@
 
 @section('content')
 <div class="max-w-6xl mx-auto px-4 py-6 bg-gray-100">
+    {{-- Menú de pestañas --}}
+<div class="mb-6 border-b border-gray-300">
+    <nav class="flex space-x-4" aria-label="Tabs">
+        <a href="{{ route('noticias.index') }}"
+           class="px-3 py-2 font-medium text-sm rounded-t-lg
+           {{ request()->routeIs('noticias.index') ? 'bg-blue-600 text-white' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100' }}">
+            Noticias
+        </a>
+        <a href="{{ route('historia.show') }}"
+           class="px-3 py-2 font-medium text-sm rounded-t-lg
+           {{ request()->routeIs('historia.show') ? 'bg-blue-600 text-white' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100' }}">
+            Historia
+        </a>
+    </nav>
+</div>
+
 
     
 
@@ -105,70 +121,6 @@
         </p>
     @endif
 
-    <!--{{-- Panel de administración (opcional) --}}
-    @auth
-        @if (Auth::user()->rol === 'admin')
-            <div class="mt-12 border-t pt-6">
-                <h2 class="text-xl font-bold text-gray-800 mb-4">Panel de administración</h2>
 
-                <a href="{{ route('admin.noticias.create') }}"
-                   class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition mb-4">
-                    + Crear nueva noticia
-                </a>
-
-                <div class="overflow-x-auto bg-white rounded-lg shadow">
-                    <table class="min-w-full divide-y divide-gray-200 text-sm">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-4 py-3 text-left font-semibold text-gray-600">Imagen</th>
-                                <th class="px-4 py-3 text-left font-semibold text-gray-600">Título</th>
-                                <th class="px-4 py-3 text-left font-semibold text-gray-600 hidden sm:table-cell">Autor</th>
-                                <th class="px-4 py-3 text-left font-semibold text-gray-600 hidden sm:table-cell">Categoría</th>
-                                <th class="px-4 py-3 text-left font-semibold text-gray-600">Fecha</th>
-                                <th class="px-4 py-3 text-left font-semibold text-gray-600">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-100">
-                            @foreach ($noticias as $noticia)
-                                <tr class="hover:bg-gray-50">
-                                    <td class="px-4 py-2">
-                                        @if($noticia->imagen)
-                                            <img src="{{ asset('storage/' . $noticia->imagen) }}"
-                                                 alt="Imagen"
-                                                 class="w-20 h-14 object-cover rounded">
-                                        @else
-                                            <span class="text-gray-400">Sin imagen</span>
-                                        @endif
-                                    </td>
-                                    <td class="px-4 py-2">{{ Str::limit($noticia->titulo, 60) }}</td>
-                                    <td class="px-4 py-2 hidden sm:table-cell">{{ $noticia->autor ?? 'Anónimo' }}</td>
-                                    <td class="px-4 py-2 hidden sm:table-cell">{{ $noticia->categoria->nombre }}</td>
-                                    <td class="px-4 py-2">{{ $noticia->created_at->format('d/m/Y') }}</td>
-                                    <td class="px-4 py-2">
-                                        <div class="flex flex-wrap gap-2">
-                                            <a href="{{ route('admin.noticias.edit', $noticia->id) }}"
-                                               class="bg-yellow-500 text-white px-2 py-1 rounded text-xs hover:bg-yellow-600">
-                                                Editar
-                                            </a>
-                                            <form action="{{ route('admin.noticias.destroy', $noticia->id) }}"
-                                                  method="POST"
-                                                  onsubmit="return confirm('¿Eliminar esta noticia?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit"
-                                                        class="bg-red-600 text-white px-2 py-1 rounded text-xs hover:bg-red-700">
-                                                    Eliminar
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        @endif
-    @endauth-->
 </div>
 @endsection

@@ -2,6 +2,21 @@
 
 @section('content')
 <div class="max-w-3xl mx-auto px-4 py-6">
+     {{-- Menú de pestañas --}}
+    <div class="mb-6 border-b border-gray-300">
+        <nav class="flex space-x-4" aria-label="Tabs">
+            <a href="{{ route('noticias.index') }}"
+               class="px-3 py-2 font-medium text-sm rounded-t-lg
+               {{ request()->routeIs('noticias.index') ? 'bg-blue-600 text-white' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100' }}">
+                Noticias
+            </a>
+            <a href="{{ route('historia.show') }}"
+               class="px-3 py-2 font-medium text-sm rounded-t-lg
+               {{ request()->routeIs('historia.show') ? 'bg-blue-600 text-white' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100' }}">
+                Historia
+            </a>
+        </nav>
+    </div>
 
     {{-- Noticia --}}
     <article class="bg-white shadow-md rounded-lg overflow-hidden mb-6">

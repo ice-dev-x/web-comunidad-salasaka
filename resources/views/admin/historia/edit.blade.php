@@ -21,7 +21,7 @@
         </div>
 
         <div class="flex justify-end gap-3">
-            <a href="{{ route('historia.show') }}" class="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300">
+            <a href="{{ route('admin.index') }}" class="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300">
                 Cancelar
             </a>
             <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
