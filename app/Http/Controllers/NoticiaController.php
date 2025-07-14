@@ -29,7 +29,7 @@ class NoticiaController extends Controller
 
     /* 📅 Orden y paginación (10 por página) */
     $noticias = $query->latest()                // mismo que orderBy('created_at', 'desc')
-                      ->paginate(10)
+                      ->paginate(6)
                       ->appends($request->only(['busqueda', 'categoria']));
 
     /* 📂 Todas las categorías para el selector */
@@ -67,7 +67,7 @@ class NoticiaController extends Controller
         'contenido' => 'required|string',
         'categoria_id' => 'required|exists:categorias,id',
         'autor' => 'required|nullable|string|max:100',
-        'imagen' => 'nullable|image|mimes:jpg,jpeg,png|max:2048', // ❗️evita avif aquí
+        'imagen' => 'required|nullable|image|mimes:jpg,jpeg,png|max:2048', // ❗️evita avif aquí
         //'imagen' => 'nullable|image|max:2048', // máximo 2MB
         ], [
     // Mensajes personalizados
@@ -144,7 +144,7 @@ public function update(Request $request, string $id)
         'contenido'    => 'required|string',
         'categoria_id' => 'required|exists:categorias,id',
         'autor'        => 'required|nullable|string|max:100',
-        'imagen'       => 'required|nullable|image|mimes:jpg,jpeg,png|max:2048',
+        'imagen'       => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
     ], [
         'imagen.mimes' => 'Formato no válido. Solo JPG, JPEG o PNG.',
         'imagen.image' => 'El archivo debe ser una imagen válida.',

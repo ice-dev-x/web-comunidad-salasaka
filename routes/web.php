@@ -8,6 +8,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Admin\CategoriaAdminController;
 use App\Http\Controllers\Admin\ComentarioAdminController;
 use App\Http\Controllers\HistoriaController; 
+use App\Http\Controllers\Admin\NoticiaAdminController;
 /* ─────────────────  Página de bienvenida  ──────────────── */
 Route::get('/', function () {
     return view('welcome');
@@ -59,6 +60,9 @@ Route::prefix('/admin')->name('admin.')->middleware(['auth','admin'])->group(fun
     // Historia (editar/actualizar)
     Route::get('historia/editar',   [HistoriaController::class,'edit'])->name('historia.edit');
     Route::put('historia/actualizar', [HistoriaController::class,'update'])->name('historia.update');   
+    /* CRUD de noticias SOLO para admins */
+    Route::resource('noticias', NoticiaAdminController::class);
+       // ← create, store, edit, update, destroy
 });
 
 /* ─────────────────  Rutas generadas por Breeze  ────────── */

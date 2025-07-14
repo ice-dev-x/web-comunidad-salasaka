@@ -14,6 +14,7 @@
             {!! $historia->contenido !!}
         </article>
     </div>
+    
 
     {{-- Botón volver --}}
     <a href="{{ route('noticias.index') }}" 

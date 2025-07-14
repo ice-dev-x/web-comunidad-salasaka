@@ -3,13 +3,23 @@
 @section('content')
 <div class="max-w-6xl mx-auto p-6">
     <h1 class="text-2xl font-bold mb-6">Panel de Administración</h1>
-
-    <div class="grid md:grid-cols-3 gap-6">
+     {{-- Cuadrícula responsiva de tarjetas --}}
+    <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
+    <!--<div class="grid md:grid-cols-3 gap-6"> -->
         <!-- Tarjeta Noticias -->
         <div class="bg-white shadow-lg rounded-lg p-6 border">
             <h2 class="text-xl font-semibold mb-2">Noticias</h2>
             <p class="text-4xl font-bold text-blue-600">{{ $totalNoticias }}</p>
-            <a href="{{ route('noticias.index') }}" class="text-blue-500 hover:underline">Ver todas</a>
+           <!-- <a href="{{ route('noticias.index') }}" class="text-blue-500 hover:underline">Ver todas</a>-->
+             {{-- Enlace a la lista de noticias del panel admin --}}
+            <a href="{{ route('admin.noticias.index') }}" class="text-blue-500 hover:underline">
+                Gestionar
+            </a>
+            {{-- Botón crear noticia (opcional) --}}
+           <!-- <a href="{{ route('admin.noticias.create') }}"
+            class="mt-2 inline-block text-sm text-white bg-blue-600 px-3 py-1 rounded hover:bg-blue-700">
+                + Nueva noticia-->
+            </a>
         </div>
 
         <!-- Tarjeta Usuarios -->
