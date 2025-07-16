@@ -9,9 +9,13 @@ use App\Http\Controllers\Admin\CategoriaAdminController;
 use App\Http\Controllers\Admin\ComentarioAdminController;
 use App\Http\Controllers\HistoriaController; 
 use App\Http\Controllers\Admin\NoticiaAdminController;
+use App\Http\Controllers\Admin\UsuarioController;
+
 /* ─────────────────  Página de bienvenida  ──────────────── */
 Route::get('/', function () {
-    return view('welcome');
+    return view('welcome'); //antes
+    //return view('noticias.index', compact('noticias'));
+
 });
 
 /* ─────────────────  Dashboard de Breeze (requiere login) ─ */
@@ -63,6 +67,14 @@ Route::prefix('/admin')->name('admin.')->middleware(['auth','admin'])->group(fun
     /* CRUD de noticias SOLO para admins */
     Route::resource('noticias', NoticiaAdminController::class);
        // ← create, store, edit, update, destroy
+       
+       /* ─────────── Usuarios (CRUD + toggle) ─────────── */
+    Route::resource('usuarios', UsuarioController::class)->except('show');
+
+    // Activar / desactivar con un botón rápido
+    Route::patch('usuarios/{user}/toggle', [UsuarioController::class, 'toggle'])
+          ->name('usuarios.toggle');
+
 });
 
 /* ─────────────────  Rutas generadas por Breeze  ────────── */

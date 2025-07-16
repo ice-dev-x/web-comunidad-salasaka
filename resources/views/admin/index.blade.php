@@ -26,6 +26,8 @@
         <div class="bg-white shadow-lg rounded-lg p-6 border">
             <h2 class="text-xl font-semibold mb-2">Usuarios</h2>
             <p class="text-4xl font-bold text-green-600">{{ $totalUsuarios }}</p>
+            <a href="{{ route('admin.usuarios.index') }}" class="text-blue-500 hover:underline">
+                Gestionar</a>
             {{-- Agrega ruta a lista de usuarios cuando la crees --}}
         </div>
         
@@ -33,6 +35,7 @@
         <div class="bg-white shadow-lg rounded-lg p-6 border">
             <h2 class="text-xl font-semibold mb-2">Comentarios</h2>
             <p class="text-4xl font-bold text-purple-600">{{ $totalComentarios }}</p>
+            <a href="{{ route('admin.comentarios.index') }}" class="text-blue-500 hover:underline">Gestionar</a>
             {{-- Futuro: ruta a moderación de comentarios --}}
         </div>
 
